@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [[ "$1" == "--help" ]]; then
+  echo "Converts video files into webm"
+  exit 0
+fi
+
+function oneFile {
+  name=`echo "$1" | cut -d'.' -f1`
+  ffmpeg -i "$1" "${name}.webm"
+}
+
+function allFiles {
+  extensions=( mp4 mkv )
+  videos=()
+
+  for i in "${extensions[@]}"; do
+    videos+=`ls *"${i}" 2> /dev/null`
+  done
+
+  for x in ${videos[*]}; do
+    name=`echo "$x" | cut -d'.' -f1`
+    ffmpeg -i "$x" "${name}.webm"
+  done
+}
+
+if [ -z "$1" ]; then
+  allFiles
+else
+  oneFile "$1"
+fi
+
+# ToDo: RIght now works on all files in a directory.
+# Want to make that default behavior, but able to do individual files
+
+# References
+# https://linuxhandbook.com/bash-arguments/
+# https://stackoverflow.com/questions/5784661/how-do-you-convert-an-entire-directory-with-ffmpeg
+# https://stackoverflow.com/questions/18444194/cutting-the-videos-based-on-start-and-end-time-using-ffmpeg

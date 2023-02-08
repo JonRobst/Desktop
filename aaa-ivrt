@@ -1,0 +1,29 @@
+#!/bin/bash
+# Script to convert images from other formats into webp
+
+if [[ "$1" == "--help" ]]; then
+  echo "In progress script to convert images from other formats into webp"
+  exit 0
+fi
+
+# Earlier version to convert into jpg I don't want to remove until new version is finished
+#find . -iname "*tiff" -o -iname "*tif" -o -iname "*bmp" | while IFS= read -r FILENAME
+#do
+#    convert "${FILENAME}" "${FILENAME%.*}.jpg"
+#done
+
+img=(jpg jpeg png tiff tif bmp)
+
+for i in "${img[@]}"; do
+    rename .$i .webp ./*
+done
+
+for x in *webp; do
+    cwebp -near_lossless 60 $x -o $x
+done
+
+# ToDo: Right now it's working on all files in a directory.
+# Want to refactor to make that default behavior, but also able to convert individual images 
+
+# References
+#https://unix.stackexchange.com/questions/166720/convert-all-non-jpg-images-to-jpgs

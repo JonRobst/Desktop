@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+# Sorts files by filetype: gif, image, video, with newer versions to include documents, scripts, and archives
+
+if [[ "$1" == "--help" ]]; then
+  echo "Sorts files by filetype: gif, image, video, with newer versions to include documents, scripts, and archives"
+  exit 0
+fi
+
+# TODO: Want to include videos without audio
+find . -maxdepth 1 -type f -iname "*gif" -exec mv -t ./Gif {} +
+
+# TODO: Want to the -iname work on a variable so it's more readable
+#img=("jpg" "*jpeg" "*png" "*bmp" "*tiff" "*tif")
+find .  -maxdepth 1 -type f \( -iname "*jpg" -o -iname "*jpeg" -o -iname "*png" -o -iname "*bmp" -o -iname "*tiff" -o -iname "*tif" \) -exec mv -t ./Img {} +
+
+# TODO: Want to the -iname work on a variable so it's more readable
+#vid=("*flac" "*mp4" "webm" "m4v" "flv" "avi" "wmv" "mpg")
+find .  -maxdepth 1 -type f \( -iname "*flac" -o -iname "*mp4" -o -iname "*webm" -o -iname "*m4v" -o -iname "*flv" -o -iname "*avi" -o -iname "*wmv" -o -iname "*mpg" \) -exec mv -t ./Vid {} +
+
+# TODO: Add in sections for documents, scripts, and archives
+# TODO: Should look for existence of those destination directories, otherwise it breaks

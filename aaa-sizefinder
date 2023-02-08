@@ -1,0 +1,19 @@
+#!/bin/bash
+# Want to make a script to find images with sizes unreasonably large so I can pair them down
+
+if [[ "$1" == "--help" ]]; then
+  echo "Identifies image files with sizes that are much larger then my monitors and moves them to a new folder so they can modified later"
+  exit 0
+fi
+
+dest=./moved
+
+for x in ./*.webp ; do
+    if [ $(identify -format '%w' $x) -gt 2400 ] || [ $(identify -format '%h' $x) -gt 1700 ]; then
+        mv $x $dest/$x
+    fi
+done
+
+# ToDo: Should make the sizes a variable so I can change them easier later on
+
+# Notes: Dimensions based on a 72ppi sheet of A1 paper

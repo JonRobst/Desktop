@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [[ "$1" == "--help" ]]; then
+  echo -e "Checks if I'm logged in and if so, uses notify-send to tell me to go to bed.\nThere is a cron job set to run this script every 15 minutes starting at 8PM"
+  exit 0
+fi
+
+if [ $(gsettings get org.gnome.desktop.lockdown disable-lock-screen) = "false" ]; then
+  notify-send "Go to bed"
+fi

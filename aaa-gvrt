@@ -1,0 +1,20 @@
+#!/bin/bash
+# Converts gif files into webm videos.
+
+if [[ "$1" == "--help" ]]; then
+  echo "Converts gif files into webm videos."
+  exit 0
+fi
+
+for i in *.gif;
+  do name=`echo "$i" | cut -d'.' -f1`
+  ffmpeg -i "$i" -an "${name}.webm"
+  printf '\a'
+done
+
+
+# References
+# https://linuxhandbook.com/bash-arguments/
+# https://superuser.com/questions/268985/remove-audio-from-video-file-with-ffmpeg
+# https://stackoverflow.com/questions/5784661/how-do-you-convert-an-entire-directory-with-ffmpeg
+# https://stackoverflow.com/questions/18444194/cutting-the-videos-based-on-start-and-end-time-using-ffmpeg
