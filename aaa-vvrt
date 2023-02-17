@@ -1,39 +1,45 @@
 #!/bin/bash
 
-if [[ "$1" == "--help" ]]; then
-  echo "Converts video files into webm"
-  exit 0
-fi
+# File formats that will be converted
+vid=(mp4 mkv)
 
-function oneFile {
-  name=`echo "$1" | cut -d'.' -f1`
-  ffmpeg -i "$1" "${name}.webm"
-}
-
-function allFiles {
-  extensions=( mp4 mkv )
+# Converts all video files to webm
+allFiles() {
+  #Array that will be all videos in the directory
   videos=()
 
-  for i in "${extensions[@]}"; do
+  #Populates $videos
+  for i in "${vid[@]}"; do
     videos+=`ls *"${i}" 2> /dev/null`
   done
 
+  #Makes a new file that is the webp of each file in $images
   for x in ${videos[*]}; do
     name=`echo "$x" | cut -d'.' -f1`
     ffmpeg -i "$x" "${name}.webm"
   done
 }
 
-if [ -z "$1" ]; then
+if [[ "$1" == "--help" ]]; then
+  echo "Converts video files into webm"
+  exit 0
+elif [[ "$1" == "" ]]; then
+  echo "converts all files"
   allFiles
 else
-  oneFile "$1"
+  extension=$(echo $1 | cut -d'.' -f2)
+  if [[ "${vid[*]}" =~ "${extension}" ]]; then
+    echo "success"
+    name=`echo "$1" | cut -d'.' -f1`
+    ffmpeg -i "$1" "${name}.webm"
+  else
+    echo "Something went wrong."
+    echo "Supports ${vid[*]}"
+  fi
 fi
-
-# ToDo: RIght now works on all files in a directory.
-# Want to make that default behavior, but able to do individual files
 
 # References
 # https://linuxhandbook.com/bash-arguments/
 # https://stackoverflow.com/questions/5784661/how-do-you-convert-an-entire-directory-with-ffmpeg
 # https://stackoverflow.com/questions/18444194/cutting-the-videos-based-on-start-and-end-time-using-ffmpeg
+# https://stackoverflow.com/a/15394738
