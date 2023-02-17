@@ -1,29 +1,45 @@
 #!/bin/bash
 # Script to convert images from other formats into webp
 
-if [[ "$1" == "--help" ]]; then
-  echo "In progress script to convert images from other formats into webp"
-  exit 0
-fi
-
-# Earlier version to convert into jpg I don't want to remove until new version is finished
-#find . -iname "*tiff" -o -iname "*tif" -o -iname "*bmp" | while IFS= read -r FILENAME
-#do
-#    convert "${FILENAME}" "${FILENAME%.*}.jpg"
-#done
-
+# File formats that will be converted
 img=(jpg jpeg png tiff tif bmp)
 
-for i in "${img[@]}"; do
-    rename .$i .webp ./*
-done
+# converts every file with a matching file extension
+convert_all() {
+  #Array that will be all images in the directory
+  images=()
 
-for x in *webp; do
-    cwebp -near_lossless 60 $x -o $x
-done
+  #Populates $images
+  for i in "${img[@]}"; do
+    images+=`ls *"${i}" 2> /dev/null`
+  done
 
-# ToDo: Right now it's working on all files in a directory.
-# Want to refactor to make that default behavior, but also able to convert individual images 
+  #Makes a new file that is the webp of each file in $images
+  for x in ${images[*]}; do
+    convert "${x}" "${x%.*}.webp"
+  done
+}
+
+if [[ $1 == "--help" ]]; then
+  echo "In progress script to convert images from other formats into webp"
+  echo "If you pass a file with jpg, jpeg, png, tiff, tif, or bmp file type, will convert it only. If no file is passed, will convert all matching files"
+  exit 0
+# Default behavior: calls convert_all function to convert every matching file
+elif [[ $1 == "" ]]; then
+  convert_all
+# Creates $extension, which should find the extension of a file passed as $1
+# Then checks if $extension is in the $img array
+else
+  extension=$(echo $1 | cut -d'.' -f2)
+  if [[ "${img[*]}" =~ "${extension}" ]]; then
+    convert "${1}" "${1%.*}.webp"
+  else
+    echo "Something went wrong."
+    echo "Are you sure you passed an image file?"
+  fi
+fi
 
 # References
-#https://unix.stackexchange.com/questions/166720/convert-all-non-jpg-images-to-jpgs
+#https://unix.stackexchange.com/a/166723
+#https://stackoverflow.com/a/15394738
+#https://stackoverflow.com/questions/5784661/how-do-you-convert-an-entire-directory-with-ffmpeg
